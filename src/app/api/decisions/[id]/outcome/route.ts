@@ -7,8 +7,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +23,7 @@ export async function POST(
       const [newOutcome] = await tx
         .insert(outcomes)
         .values({
-          decisionId: params.id,
+          decisionId: id,
           actualResult: validated.actualResult,
           status: validated.status,
           notes: validated.notes,
@@ -38,7 +39,7 @@ export async function POST(
           isGraveyard: validated.status === 'invalidated' || validated.status === 'inconclusive',
           updatedAt: new Date(),
         })
-        .where(eq(decisions.id, params.id));
+        .where(eq(decisions.id, id));
 
       return newOutcome;
     });

@@ -6,8 +6,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params;
   const [invite] = await db
     .select({
       email: invites.email,
@@ -21,7 +22,7 @@ export async function GET(
     .innerJoin(users, eq(invites.invitedBy, users.id))
     .where(
       and(
-        eq(invites.token, params.token),
+        eq(invites.token, token),
         gt(invites.expiresAt, new Date()),
         eq(invites.acceptedAt, null as any) // Check explicitly for null/not accepted
       )
@@ -37,8 +38,9 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,7 +51,7 @@ export async function POST(
     .from(invites)
     .where(
       and(
-        eq(invites.token, params.token),
+        eq(invites.token, token),
         gt(invites.expiresAt, new Date())
       )
     )

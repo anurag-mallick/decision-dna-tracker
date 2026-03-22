@@ -11,8 +11,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,7 +25,7 @@ export async function GET(
     .innerJoin(workspaceMembers, eq(workspaces.id, workspaceMembers.workspaceId))
     .where(
       and(
-        eq(workspaces.slug, params.slug),
+        eq(workspaces.slug, slug),
         eq(workspaceMembers.userId, session.user.id)
       )
     )
@@ -59,8 +60,9 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -76,7 +78,7 @@ export async function POST(
       .innerJoin(workspaces, eq(workspaces.id, workspaceMembers.workspaceId))
       .where(
         and(
-          eq(workspaces.slug, params.slug),
+          eq(workspaces.slug, slug),
           eq(workspaceMembers.userId, session.user.id)
         )
       )

@@ -7,8 +7,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -26,7 +27,7 @@ export async function GET(
     .innerJoin(workspaceMembers, eq(workspaces.id, workspaceMembers.workspaceId))
     .where(
       and(
-        eq(workspaces.slug, params.slug),
+        eq(workspaces.slug, slug),
         eq(workspaceMembers.userId, session.user.id)
       )
     )
@@ -41,8 +42,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -58,7 +60,7 @@ export async function PATCH(
       .innerJoin(workspaces, eq(workspaces.id, workspaceMembers.workspaceId))
       .where(
         and(
-          eq(workspaces.slug, params.slug),
+          eq(workspaces.slug, slug),
           eq(workspaceMembers.userId, session.user.id)
         )
       )

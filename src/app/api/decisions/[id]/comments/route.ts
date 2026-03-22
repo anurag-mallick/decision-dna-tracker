@@ -7,8 +7,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -27,7 +28,7 @@ export async function GET(
     })
     .from(comments)
     .innerJoin(users, eq(comments.userId, users.id))
-    .where(eq(comments.decisionId, params.id))
+    .where(eq(comments.decisionId, id))
     .orderBy(desc(comments.createdAt));
 
   return NextResponse.json(allComments);
@@ -35,8 +36,9 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -50,7 +52,7 @@ export async function POST(
     const [decision] = await db
       .select()
       .from(decisions)
-      .where(eq(decisions.id, params.id))
+      .where(eq(decisions.id, id))
       .limit(1);
 
     if (!decision) {
@@ -60,7 +62,7 @@ export async function POST(
     const [comment] = await db
       .insert(comments)
       .values({
-        decisionId: params.id,
+        decisionId: id,
         userId: session.user.id,
         content: validated.content,
       })

@@ -10,14 +10,14 @@ export default async function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const workspaceSlug = params.workspace;
+  const { workspace: workspaceSlug } = await params;
 
   // Verify workspace existence and membership
   const workspace = await db.query.workspaces.findFirst({

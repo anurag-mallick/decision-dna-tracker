@@ -7,8 +7,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -25,7 +26,7 @@ export async function GET(
     })
     .from(decisions)
     .innerJoin(users, eq(decisions.ownerId, users.id))
-    .where(eq(decisions.id, params.id))
+    .where(eq(decisions.id, id))
     .limit(1);
 
   if (!decision) {
@@ -37,8 +38,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -51,7 +53,7 @@ export async function PATCH(
     const [existingDecision] = await db
       .select()
       .from(decisions)
-      .where(eq(decisions.id, params.id))
+      .where(eq(decisions.id, id))
       .limit(1);
 
     if (!existingDecision) {
@@ -66,7 +68,7 @@ export async function PATCH(
         reviewDate: validated.reviewDate ? new Date(validated.reviewDate).toISOString().split('T')[0] : (validated.reviewDate === null ? null : undefined),
         updatedAt: new Date(),
       })
-      .where(eq(decisions.id, params.id))
+      .where(eq(decisions.id, id))
       .returning();
 
     return NextResponse.json(updatedDecision);
@@ -83,8 +85,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -92,7 +95,7 @@ export async function DELETE(
 
   const [decision] = await db
     .delete(decisions)
-    .where(and(eq(decisions.id, params.id), eq(decisions.ownerId, session.user.id)))
+    .where(and(eq(decisions.id, id), eq(decisions.ownerId, session.user.id)))
     .returning();
 
   if (!decision) {
