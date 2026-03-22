@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Decision DNA Tracker 🧬
 
-## Getting Started
+**Decision DNA Tracker** is a production-ready tool designed for product teams to log the "why" behind every decision, track outcomes, and build a searchable institutional memory. Never lose the context of a decision again, even when team members move on.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Decision Logging**: Capture problem statements, context, considered options (with pros/cons), and evidence.
+- **Outcome Tracking**: Close the loop by logging actual results against your initial hypotheses.
+- **Decision Graph**: Interactive D3.js visualization of decision dependencies and evolution.
+- **The Graveyard**: Archive rejected ideas to prevent "zombie" proposals and learn from the past.
+- **Workspace Management**: Multi-tenant support for different teams and projects.
+- **Secure Invites**: Easily bring teammates into your workspace.
+- **Email Reminders**: Automated review reminders via Resend to ensure no decision goes unevaluated.
+- **Full-Text Search**: Instantly find past decisions using PostgreSQL full-text search.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL (Neon)
+- **ORM**: Drizzle ORM
+- **Auth**: NextAuth.js v5 (Auth.js)
+- **Styling**: Tailwind CSS
+- **Visualization**: D3.js
+- **Emails**: Resend
+- **Icons**: Lucide React
+- **Validation**: Zod
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏁 Getting Started
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js 18+ 
+- A Neon PostgreSQL database
+- A Resend API key
+- Google OAuth credentials (optional, for social login)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/anurag-mallick/decision-dna-tracker.git
+   cd decision-dna-tracker
+   ```
 
-## Deploy on Vercel
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Set up environment variables**:
+   Copy `.env.example` to `.env.local` and fill in your keys:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Initialize the database**:
+   ```bash
+   npm run db:push
+   ```
+
+5. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 👨‍💻 Author
+
+**Anurag Mallick**
+- [GitHub](https://github.com/anurag-mallick)
+- [LinkedIn](https://www.linkedin.com/in/anuragmallick901/)
+
+## 📄 License
+
+This project is licensed under the MIT License.
