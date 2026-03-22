@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { workspaceMembers, workspaces } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { DecisionLogMockup, OutcomeTrackingMockup, DecisionGraphMockup } from "@/components/landing/mockups";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -141,15 +142,15 @@ export default async function LandingPage() {
                   ))}
                 </ul>
               </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 aspect-video flex items-center justify-center text-zinc-600 bg-gradient-to-br from-zinc-900 to-zinc-950">
-                [Decision Log Screenshot Placeholder]
+              <div className="rounded-xl border border-zinc-800 overflow-hidden shadow-2xl shadow-black/50">
+                <DecisionLogMockup />
               </div>
             </div>
 
             {/* Feature 2 */}
             <div className="grid lg:grid-cols-2 gap-16 items-center lg:flex-row-reverse">
-              <div className="order-last lg:order-first rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 aspect-video flex items-center justify-center text-zinc-600 bg-gradient-to-bl from-zinc-900 to-zinc-950">
-                [Outcome Tracking Screenshot Placeholder]
+              <div className="order-last lg:order-first rounded-xl border border-zinc-800 overflow-hidden shadow-2xl shadow-black/50">
+                <OutcomeTrackingMockup />
               </div>
               <div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-600/20 text-emerald-500 mb-6">
@@ -181,8 +182,8 @@ export default async function LandingPage() {
                   See how decisions connect. Trace a feature back to the strategy that created it. Visualize dependencies and understand the ripple effects of your choices.
                 </p>
               </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 aspect-video flex items-center justify-center text-zinc-600 bg-gradient-to-br from-zinc-900 to-zinc-950">
-                [Graph Screenshot Placeholder]
+              <div className="rounded-xl border border-zinc-800 overflow-hidden shadow-2xl shadow-black/50">
+                <DecisionGraphMockup />
               </div>
             </div>
 
