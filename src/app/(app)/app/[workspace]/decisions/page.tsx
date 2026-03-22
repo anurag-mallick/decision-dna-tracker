@@ -11,9 +11,9 @@ import { eq, and, desc } from "drizzle-orm";
 export default async function DecisionsPage({
   params,
 }: {
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
-  const workspaceSlug = params.workspace;
+  const { workspace: workspaceSlug } = await params;
 
   const [workspace] = await db
     .select()

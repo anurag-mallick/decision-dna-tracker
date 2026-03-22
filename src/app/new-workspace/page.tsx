@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { workspaceSchema } from "@/lib/validations";
+import { toast } from "sonner";
 
 export default function NewWorkspacePage() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function NewWorkspacePage() {
         throw new Error(data.error || "Something went wrong");
       }
 
+      toast.success("Workspace created! Welcome to Decision DNA.");
       router.push(`/app/${data.slug}/dashboard`);
       router.refresh();
     } catch (err: any) {

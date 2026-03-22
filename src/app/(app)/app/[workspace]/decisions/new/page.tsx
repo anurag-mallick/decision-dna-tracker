@@ -1,10 +1,11 @@
 import { DecisionForm } from "@/components/decisions/decision-form";
 
-export default function NewDecisionPage({
+export default async function NewDecisionPage({
   params,
 }: {
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
+  const { workspace: workspaceSlug } = await params;
   return (
     <div className="space-y-8">
       <div>
@@ -15,7 +16,7 @@ export default function NewDecisionPage({
       </div>
 
       <div className="max-w-4xl">
-        <DecisionForm workspaceSlug={params.workspace} />
+        <DecisionForm workspaceSlug={workspaceSlug} />
       </div>
     </div>
   );

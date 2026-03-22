@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 export default async function SettingsPage({
   params,
 }: {
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
-  const workspaceSlug = params.workspace;
+  const { workspace: workspaceSlug } = await params;
 
   const [workspace] = await db
     .select()

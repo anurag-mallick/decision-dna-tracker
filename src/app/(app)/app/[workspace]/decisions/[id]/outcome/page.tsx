@@ -7,12 +7,14 @@ import { OutcomeLogger } from "@/components/decisions/outcome-logger";
 export default async function OutcomePage({
   params,
 }: {
-  params: { workspace: string; id: string };
+  params: Promise<{ workspace: string; id: string }>;
 }) {
+  const { workspace: workspaceSlug, id } = await params;
+  
   const [decision] = await db
     .select()
     .from(decisions)
-    .where(eq(decisions.id, params.id))
+    .where(eq(decisions.id, id))
     .limit(1);
 
   if (!decision) {
@@ -31,7 +33,7 @@ export default async function OutcomePage({
       <OutcomeLogger
         decisionId={decision.id}
         decisionTitle={decision.title}
-        workspaceSlug={params.workspace}
+        workspaceSlug={workspaceSlug}
       />
     </div>
   );

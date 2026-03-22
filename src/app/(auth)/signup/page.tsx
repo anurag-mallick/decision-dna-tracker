@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { signupSchema } from "@/lib/validations";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -42,8 +43,10 @@ export default function SignupPage() {
       await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        redirect: false,
       });
+      toast.success("Account created! Set up your workspace.");
+      router.push("/new-workspace");
     } catch (err: any) {
       if (err.name === "ZodError") {
         setError(err.errors[0].message);

@@ -15,9 +15,9 @@ import { EmptyState } from "@/components/ui/empty-state";
 export default async function DashboardPage({
   params,
 }: {
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
-  const workspaceSlug = params.workspace;
+  const { workspace: workspaceSlug } = await params;
 
   const [workspace] = await db
     .select()

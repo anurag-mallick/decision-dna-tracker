@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { decisionSchema } from "@/lib/validations";
 import { Decision } from "@/lib/schema";
+import { toast } from "sonner";
 
 interface DecisionFormProps {
   workspaceSlug: string;
@@ -147,6 +148,7 @@ export function DecisionForm({ workspaceSlug, initialData }: DecisionFormProps) 
       }
 
       const decision = await response.json();
+      toast.success(initialData ? "Decision updated successfully" : "Decision logged successfully");
       router.push(`/app/${workspaceSlug}/decisions/${decision.id || initialData?.id}`);
       router.refresh();
     } catch (err: any) {

@@ -19,17 +19,6 @@ export default async function Layout({
 
   const { workspace: workspaceSlug } = await params;
 
-  // Verify workspace existence and membership
-  const workspace = await db.query.workspaces.findFirst({
-    where: eq(workspaces.slug, workspaceSlug),
-    with: {
-      members: {
-        where: eq(workspaceMembers.userId, session.user.id),
-      },
-    },
-  });
-
-  // If I can't use 'with' directly because of Drizzle setup, I'll do a join
   const [member] = await db
     .select()
     .from(workspaceMembers)
@@ -43,9 +32,7 @@ export default async function Layout({
     .limit(1);
 
   if (!member) {
-    // If user is not a member, check if it's their first time and they have NO workspaces
-    // Redirect to a "Create Workspace" or "Dashboard" where they can pick one
-    redirect("/");
+    redirect("/new-workspace");
   }
 
   return (

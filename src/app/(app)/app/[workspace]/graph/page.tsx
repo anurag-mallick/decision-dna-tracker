@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { decisions, workspaces, workspaceMembers } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
@@ -7,10 +8,13 @@ import { DecisionGraph } from "@/components/graph/decision-graph";
 export default async function GraphPage({
   params,
 }: {
-  params: { workspace: string };
+  params: Promise<{ workspace: string }>;
 }) {
   const session = await auth();
-  const workspaceSlug = params.workspace;
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+  const { workspace: workspaceSlug } = await params;
 
   const [workspace] = await db
     .select()

@@ -8,8 +8,10 @@ import { DecisionChain } from "@/components/decisions/decision-chain";
 export default async function DecisionPage({
   params,
 }: {
-  params: { workspace: string; id: string };
+  params: Promise<{ workspace: string; id: string }>;
 }) {
+  const { workspace: workspaceSlug, id } = await params;
+  
   const [data] = await db
     .select({
       decision: decisions,
@@ -21,14 +23,13 @@ export default async function DecisionPage({
     })
     .from(decisions)
     .innerJoin(users, eq(decisions.ownerId, users.id))
-    .where(eq(decisions.id, params.id))
+    .where(eq(decisions.id, id))
     .limit(1);
 
   if (!data) {
     notFound();
   }
 
-  // Fetch parents (usually just one, but schema allows for more if we want to expand)
   let parents: any[] = [];
   if (data.decision.parentDecisionId) {
     parents = await db
@@ -37,7 +38,6 @@ export default async function DecisionPage({
       .where(eq(decisions.id, data.decision.parentDecisionId));
   }
 
-  // Fetch children
   const children = await db
     .select()
     .from(decisions)
@@ -48,15 +48,15 @@ export default async function DecisionPage({
       <DecisionDetail
         decision={data.decision}
         owner={data.owner}
-        workspaceSlug={params.workspace}
+        workspaceSlug={workspaceSlug}
       />
       
       <div className="max-w-3xl">
         <DecisionChain
           decision={data.decision}
           parents={parents}
-          children={children}
-          workspaceSlug={params.workspace}
+          childDecisions={children}
+          workspaceSlug={workspaceSlug}
         />
       </div>
     </div>

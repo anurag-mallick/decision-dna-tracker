@@ -16,7 +16,7 @@ export default auth((req) => {
   }
   if (isAuthRoute && isLoggedIn) {
     return NextResponse.redirect(
-      new URL('/app', req.nextUrl)
+      new URL('/', req.nextUrl)
     );
   }
   return NextResponse.next();

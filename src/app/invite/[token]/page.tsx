@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn, useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 
-export default function InvitePage({
-  params,
-}: {
-  params: { token: string };
-}) {
+export default function InvitePage() {
   const router = useRouter();
+  const params = useParams();
+  const token = params.token as string;
   const { data: session, status: sessionStatus } = useSession();
   const [invite, setInvite] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -22,7 +21,7 @@ export default function InvitePage({
   useEffect(() => {
     async function fetchInvite() {
       try {
-        const res = await fetch(`/api/invites/${params.token}`);
+        const res = await fetch(`/api/invites/${token}`);
         if (!res.ok) {
           throw new Error("Invalid or expired invite");
         }
@@ -34,17 +33,19 @@ export default function InvitePage({
         setLoading(false);
       }
     }
-    fetchInvite();
-  }, [params.token]);
+    if (token) {
+      fetchInvite();
+    }
+  }, [token]);
 
   const handleAccept = async () => {
     setAccepting(true);
     try {
-      const res = await fetch(`/api/invites/${params.token}`, {
+      const res = await fetch(`/api/invites/${token}`, {
         method: "POST",
       });
       if (res.ok) {
-        router.push("/"); // Will redirect to workspace dashboard
+        router.push("/");
       } else {
         const data = await res.json();
         setError(data.error || "Failed to accept invite");
@@ -74,7 +75,7 @@ export default function InvitePage({
           </CardHeader>
           <CardFooter>
             <Button className="w-full" asChild>
-              <a href="/">Go Home</a>
+              <Link href="/">Go Home</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -89,7 +90,7 @@ export default function InvitePage({
           <CardHeader>
             <CardTitle>You've been invited!</CardTitle>
             <CardDescription>
-              {invite.inviterName} invited you to join <strong>{invite.workspaceName}</strong> as a {invite.role}.
+              {invite?.inviterName} invited you to join <strong>{invite?.workspaceName}</strong> as a {invite?.role}.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -99,7 +100,7 @@ export default function InvitePage({
             <div className="space-y-2">
               <Button 
                 className="w-full" 
-                onClick={() => signIn(undefined, { callbackUrl: `/invite/${params.token}` })}
+                onClick={() => signIn(undefined, { callbackUrl: `/invite/${token}` })}
               >
                 Sign In / Sign Up
               </Button>
@@ -116,12 +117,12 @@ export default function InvitePage({
         <CardHeader>
           <CardTitle>Accept Invitation</CardTitle>
           <CardDescription>
-            Join <strong>{invite.workspaceName}</strong> as <strong>{session.user?.email}</strong>
+            Join <strong>{invite?.workspaceName}</strong> as <strong>{session.user?.email}</strong>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-zinc-500">
-            You are logged in as {session.user?.name}. Accepting this invite will grant you {invite.role} access.
+            You are logged in as {session.user?.name}. Accepting this invite will grant you {invite?.role} access.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">

@@ -6,12 +6,11 @@ import { Input } from "@/components/ui/input";
 import { DecisionCard } from "@/components/decisions/decision-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useParams } from "next/navigation";
 
-export default function SearchPage({
-  params,
-}: {
-  params: { workspace: string };
-}) {
+export default function SearchPage() {
+  const params = useParams();
+  const workspaceSlug = params.workspace as string;
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
   const [results, setResults] = useState<any[]>([]);
@@ -27,7 +26,7 @@ export default function SearchPage({
       setIsLoading(true);
       try {
         const res = await fetch(
-          `/api/search?workspaceSlug=${params.workspace}&q=${encodeURIComponent(
+          `/api/search?workspaceSlug=${workspaceSlug}&q=${encodeURIComponent(
             debouncedQuery
           )}`
         );
@@ -43,7 +42,7 @@ export default function SearchPage({
     }
 
     performSearch();
-  }, [debouncedQuery, params.workspace]);
+  }, [debouncedQuery, workspaceSlug]);
 
   return (
     <div className="space-y-8">
@@ -76,7 +75,7 @@ export default function SearchPage({
               <DecisionCard
                 key={decision.id}
                 decision={decision}
-                workspaceSlug={params.workspace}
+                workspaceSlug={workspaceSlug}
               />
             ))}
           </div>

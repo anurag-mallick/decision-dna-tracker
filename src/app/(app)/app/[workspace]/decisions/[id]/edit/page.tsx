@@ -7,12 +7,14 @@ import { DecisionForm } from "@/components/decisions/decision-form";
 export default async function EditDecisionPage({
   params,
 }: {
-  params: { workspace: string; id: string };
+  params: Promise<{ workspace: string; id: string }>;
 }) {
+  const { workspace: workspaceSlug, id } = await params;
+  
   const [decision] = await db
     .select()
     .from(decisions)
-    .where(eq(decisions.id, params.id))
+    .where(eq(decisions.id, id))
     .limit(1);
 
   if (!decision) {
@@ -30,7 +32,7 @@ export default async function EditDecisionPage({
 
       <div className="max-w-4xl">
         <DecisionForm 
-          workspaceSlug={params.workspace} 
+          workspaceSlug={workspaceSlug} 
           initialData={decision} 
         />
       </div>
