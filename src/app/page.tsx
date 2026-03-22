@@ -7,7 +7,9 @@ import {
   Skull, 
   ArrowRight,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Github,
+  Linkedin
 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -217,12 +219,14 @@ export default async function LandingPage() {
           <p className="text-sm text-zinc-500">
             © {new Date().getFullYear()} Decision DNA Tracker. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <a href="https://github.com/anurag-mallick" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors">
-              GitHub
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-zinc-500">Made by</span>
+            <a href="https://github.com/anurag-mallick" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors">
+              <Github className="h-4 w-4" />
+              <span>Anurag Mallick</span>
             </a>
-            <a href="https://www.linkedin.com/in/anuragmallick901/" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white transition-colors">
-              LinkedIn
+            <a href="https://www.linkedin.com/in/anuragmallick901/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors">
+              <Linkedin className="h-4 w-4" />
             </a>
           </div>
         </div>
