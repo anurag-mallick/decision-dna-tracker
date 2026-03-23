@@ -10,13 +10,14 @@ if (!process.env.AUTH_SECRET) {
   process.env.AUTH_SECRET = 'fallback-secret-for-build';
 }
 
+const googleProvider = Google({
+  clientId: process.env.GOOGLE_CLIENT_ID!,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+});
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-      enabled: !!process.env.GOOGLE_CLIENT_ID,
-    }),
+    ...(process.env.GOOGLE_CLIENT_ID ? [googleProvider] : []),
     Credentials({
       credentials: {
         email: { type: 'email' },
