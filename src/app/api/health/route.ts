@@ -5,11 +5,12 @@ import { sql } from 'drizzle-orm';
 export async function GET() {
   try {
     const result = await db.select({ version: sql`version()` });
+    const version = Array.isArray(result) ? result[0]?.version : 'Unknown';
     
     return NextResponse.json({
       status: 'healthy',
       database: 'connected',
-      postgresVersion: result[0]?.version,
+      postgresVersion: version,
       message: 'Database is ready'
     });
   } catch (error: any) {
