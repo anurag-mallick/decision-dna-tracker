@@ -30,8 +30,8 @@ jobs:
       run: npm run build
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-        NEXTAUTH_URL: http://localhost:3000
+        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        AUTH_URL: http://localhost:3000
         RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         CRON_SECRET: ${{ secrets.CRON_SECRET }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}

@@ -6,11 +6,16 @@ import { users } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 
+if (!process.env.AUTH_SECRET) {
+  process.env.AUTH_SECRET = 'fallback-secret-for-build';
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      enabled: !!process.env.GOOGLE_CLIENT_ID,
     }),
     Credentials({
       credentials: {
