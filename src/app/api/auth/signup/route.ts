@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validated = signupSchema.parse(body);
 
+    console.log('Checking if user exists:', validated.email);
     const [existingUser] = await db
       .select()
       .from(users)
@@ -23,8 +24,10 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log('Hashing password...');
     const passwordHash = await hash(validated.password, 12);
 
+    console.log('Inserting user...');
     const [user] = await db
       .insert(users)
       .values({
@@ -34,17 +37,24 @@ export async function POST(req: Request) {
       })
       .returning();
 
+    console.log('User created:', user.id);
+
     return NextResponse.json({
       id: user.id,
       name: user.name,
       email: user.email,
     });
   } catch (error: any) {
+    console.error('Signup error:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error message:', error.message);
+    
     if (error.name === "ZodError") {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
+    
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: error.message },
       { status: 500 }
     );
   }
