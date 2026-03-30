@@ -10,17 +10,17 @@ import {
   index,
 } from 'drizzle-orm/pg-core';
 
-export const roleEnum = pgEnum('role', 
+export const roleEnum = pgEnum('role',
   ['admin', 'contributor', 'viewer']
 );
 
-export const confidenceEnum = pgEnum('confidence_level', 
+export const confidenceEnum = pgEnum('confidence_level',
   ['high', 'medium', 'low']
 );
 
 export const decisionStatusEnum = pgEnum('decision_status', [
   'active',
-  'reviewing', 
+  'reviewing',
   'validated',
   'invalidated',
   'inconclusive',
@@ -161,11 +161,52 @@ export const invites = pgTable('invites', {
   acceptedAt: timestamp('accepted_at'),
 });
 
+export const actionTypeEnum = pgEnum("action_type", [
+  "created",
+  "updated",
+  "status_changed",
+  "commented",
+  "outcome_logged",
+  "archived",
+  "restored",
+]);
+
+export const activityLogs = pgTable(
+  "activity_logs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workspaceId: uuid("workspace_id")
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    decisionId: uuid("decision_id")
+      .notNull()
+      .references(() => decisions.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    actionType: actionTypeEnum("action_type").notNull(),
+    details: jsonb("details").$type<Record<string, any>>(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    workspaceIdx: index("activity_logs_workspace_idx").on(
+      table.workspaceId
+    ),
+    decisionIdx: index("activity_logs_decision_idx").on(
+      table.decisionId
+    ),
+    createdAtIdx: index("activity_logs_created_at_idx").on(
+      table.createdAt
+    ),
+  })
+);
+
 export type User = typeof users.$inferSelect;
 export type Workspace = typeof workspaces.$inferSelect;
-export type WorkspaceMember = 
+export type WorkspaceMember =
   typeof workspaceMembers.$inferSelect;
 export type Decision = typeof decisions.$inferSelect;
 export type Outcome = typeof outcomes.$inferSelect;
 export type Comment = typeof comments.$inferSelect;
 export type Invite = typeof invites.$inferSelect;
+export type ActivityLog = typeof activityLogs.$inferSelect;

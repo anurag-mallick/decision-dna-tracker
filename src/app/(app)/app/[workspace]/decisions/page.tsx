@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DecisionCard } from "@/components/decisions/decision-card";
@@ -43,12 +43,20 @@ export default async function DecisionsPage({
             Keep track of all major decisions and their current status.
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/app/${workspaceSlug}/decisions/new`}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Decision
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href={`/api/decisions/export?workspaceSlug=${workspaceSlug}&format=csv`}>
+              <Download className="mr-2 h-4 w-4" />
+              Export CSV
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href={`/app/${workspaceSlug}/decisions/new`}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Decision
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
@@ -78,7 +86,7 @@ export default async function DecisionsPage({
           description="Start tracking your team's decisions to build your DNA map."
           action={{
             label: "Create Decision",
-            onClick: () => {}, // Handled by Link above, but this component needs it
+            onClick: () => { }, // Handled by Link above, but this component needs it
           }}
         />
       )}

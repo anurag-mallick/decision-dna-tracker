@@ -1,15 +1,16 @@
 import { db } from "@/lib/db";
 import { decisions, workspaces } from "@/lib/schema";
 import { eq, and, count, lte } from "drizzle-orm";
-import { 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
+import {
+  FileText,
+  CheckCircle2,
+  Clock,
   TrendingUp,
   AlertCircle
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ReviewTable } from "@/components/dashboard/review-table";
+import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function DashboardPage({
@@ -53,8 +54,8 @@ export default async function DashboardPage({
       )
     );
 
-  const successRate = totalDecisions.value > 0 
-    ? Math.round((validatedDecisions.value / totalDecisions.value) * 100) 
+  const successRate = totalDecisions.value > 0
+    ? Math.round((validatedDecisions.value / totalDecisions.value) * 100)
     : 0;
 
   // Decisions needing review (reviewDate <= today)
@@ -107,21 +108,24 @@ export default async function DashboardPage({
         />
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          <AlertCircle className="h-5 w-5 text-amber-500" />
-          Needs Evaluation
-        </h2>
-        {pendingReviews.length > 0 ? (
-          <ReviewTable
-            decisions={pendingReviews}
-            workspaceSlug={workspaceSlug}
-          />
-        ) : (
-          <div className="rounded-lg border border-dashed border-zinc-200 p-8 text-center dark:border-zinc-800">
-            <p className="text-sm text-zinc-500">No decisions currently due for review. Nice work!</p>
-          </div>
-        )}
+      <div className="grid gap-8 lg:grid-cols-2">
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-amber-500" />
+            Needs Evaluation
+          </h2>
+          {pendingReviews.length > 0 ? (
+            <ReviewTable
+              decisions={pendingReviews}
+              workspaceSlug={workspaceSlug}
+            />
+          ) : (
+            <div className="rounded-lg border border-dashed border-zinc-200 p-8 text-center dark:border-zinc-800">
+              <p className="text-sm text-zinc-500">No decisions currently due for review. Nice work!</p>
+            </div>
+          )}
+        </div>
+        <ActivityFeed workspaceSlug={workspaceSlug} />
       </div>
     </div>
   );
